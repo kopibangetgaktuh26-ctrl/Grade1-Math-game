@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tens and Ones Math Adventure | Grade 1 Numbers 11-20</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #fce7f3 100%);
+      --card-bg: rgba(255, 255, 255, 0.97);
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --shadow: 0 12px 32px rgba(30, 41, 59, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', 'Quicksand', 'Nunito', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Container */
+    .game-container {
+      width: 100%;
+      max-width: 760px;
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      border: 3px solid #ffffff;
+      padding: 24px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .badge-pill {
+      background: #eff6ff;
+      border: 2px solid #bfdbfe;
+      color: #1e40af;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #e2e8f0;
+      transform: scale(1.05);
+    }
+
+    /* Progress Bar */
+    .progress-wrap {
+      width: 100%;
+      background: #e2e8f0;
+      height: 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 2px solid #cbd5e1;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #818cf8, #f472b6);
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Screens */
+    .screen {
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Welcome Screen */
+    .hero-banner {
+      text-align: center;
+      padding: 24px 12px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #fef08a;
+      color: #854d0e;
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      border: 2px solid #fde047;
+    }
+
+    .hero-title {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .mascot-art {
+      font-size: 4.5rem;
+      animation: bounce 2s infinite ease-in-out;
+      margin-bottom: 16px;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .input-group {
+      max-width: 360px;
+      margin: 0 auto 24px;
+      text-align: left;
+    }
+
+    .input-label {
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: block;
+      color: #334155;
+      font-size: 1.05rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 18px;
+      border: 3px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary);
+    }
+
+    /* Buttons */
+    .btn-main {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: white;
+      border: none;
+      padding: 16px 36px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(79, 70, 229, 0.45);
+    }
+
+    .btn-main:active {
+      transform: translateY(1px);
+    }
+
+    /* Question Screen */
+    .q-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .q-tag {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #4f46e5;
+      background: #e0e7ff;
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+
+    .q-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      margin-bottom: 14px;
+    }
+
+    .q-hint {
+      font-size: 1rem;
+      color: #64748b;
+      margin-top: -6px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    /* Visual Box */
+    .visual-box {
+      background: #f8fafc;
+      border: 3px dashed #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      min-height: 160px;
+    }
+
+    .visual-svg-wrap {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Options Grid (Part 1 MCQ) */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 540px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .opt-card {
+      background: #ffffff;
+      border: 3px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e293b;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 66px;
+    }
+
+    .opt-card:hover {
+      border-color: #818cf8;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+    }
+
+    .opt-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
+
+    .opt-card.correct {
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #15803d !important;
+      transform: scale(1.03);
+    }
+
+    .opt-card.wrong {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #b91c1c !important;
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Part 2: Fill in the Blank UI */
+    .fill-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .slots-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .slot-box {
+      width: 66px;
+      height: 66px;
+      border: 3px dashed #6366f1;
+      border-radius: 14px;
+      background: #eef2ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: #312e81;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .slot-box.active {
+      border: 3px solid #f59e0b;
+      background: #fef3c7;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
+      transform: scale(1.08);
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      max-width: 380px;
+      width: 100%;
+    }
+
+    .key-btn {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #1e293b;
+      padding: 12px 6px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+      transition: all 0.15s;
+    }
+
+    .key-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .key-btn:active {
+      transform: translateY(2px);
+    }
+
+    .key-action {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+      font-size: 1.1rem;
+    }
+
+    .key-submit {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #15803d;
+      grid-column: span 2;
+      font-size: 1.15rem;
+    }
+
+    /* Feedback Banner */
+    .feedback-banner {
+      display: none;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      margin-top: 14px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: fadeIn 0.25s ease;
+      font-size: 1.05rem;
+    }
+
+    .feedback-banner.show {
+      display: flex;
+    }
+
+    .feedback-banner.success {
+      background: #ecfdf5;
+      border: 2px solid #6ee7b7;
+      color: #065f46;
+    }
+
+    .feedback-banner.error {
+      background: #fff1f2;
+      border: 2px solid #fda4af;
+      color: #9f1239;
+    }
+
+    .btn-next {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-next:hover {
+      background: #059669;
+      transform: scale(1.03);
+    }
+
+    /* End Screen & Certificate */
+    .certificate-card {
+      background: #ffffff;
+      border: 6px double #f59e0b;
+      border-radius: 20px;
+      padding: 26px;
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
+    }
+
+    .cert-badge {
+      font-size: 3.5rem;
+      margin-bottom: 8px;
+    }
+
+    .cert-title {
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: #78350f;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cert-sub {
+      color: #92400e;
+      font-weight: 700;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+    }
+
+    .cert-name {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      text-decoration: underline wavy #f59e0b;
+      margin-bottom: 14px;
+    }
+
+    .score-circle {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: #fef3c7;
+      border: 4px solid #f59e0b;
+      margin: 12px 0;
+    }
+
+    .score-num {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #b45309;
+      line-height: 1;
+    }
+
+    .score-denom {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #92400e;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      color: #334155;
+      padding: 14px 24px;
+      border-radius: var(--radius-md);
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+    }
+
+    /* Print styling */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .game-container {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+        padding: 0;
+      }
+      .top-bar, .action-row, #confetti-canvas {
+        display: none !important;
+      }
+      .certificate-card {
+        border: 4px solid #000;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="game-container">
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+      <div class="badge-pill" id="player-badge">
+        <span>⭐</span>
+        <span id="display-name">Little Math Star</span>
+      </div>
+
+      <div class="top-controls">
+        <div class="badge-pill" style="background:#fef9c3; border-color:#fef08a; color:#a16207;">
+          <span>🏆</span>
+          <span id="score-counter">Score: 0</span>
+        </div>
+        <button class="icon-btn" id="lang-btn" title="Switch Language / Ubah Bahasa">🇬🇧</button>
+        <button class="icon-btn" id="sound-btn" title="Sound On/Off">🔊</button>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-wrap" id="progress-container" style="display:none;">
+      <div class="progress-fill" id="progress-bar"></div>
+    </div>
+
+    <!-- SCREEN 1: WELCOME (Simple Grade 1 English) -->
+    <div class="screen active" id="screen-welcome">
+      <div class="hero-banner">
+        <div class="hero-badge">🌟 GRADE 1 MATH • NUMBERS 11 TO 20</div>
+        <div class="mascot-art">🚀⭐🎒</div>
+        <h1 class="hero-title" id="txt-title">Tens & Ones Adventure!</h1>
+        <p class="hero-subtitle" id="txt-subtitle">Fun math game to learn Numbers 11 to 20!</p>
+
+        <div class="input-group">
+          <label class="input-label" id="txt-namelabel">Type Your Name:</label>
+          <input type="text" class="input-field" id="input-name" placeholder="e.g. Leo, Emma, Alex..." maxlength="25" value="Math Star">
+        </div>
+
+        <div>
+          <button class="btn-main" id="btn-start">
+            <span id="txt-start-btn">Start Game!</span>
+            <span>👉</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: GAMEPLAY (QUESTIONS) -->
+    <div class="screen" id="screen-game">
+      <div class="q-header">
+        <span class="q-tag" id="q-number-tag">Question 1 of 15</span>
+        <span style="font-weight: 700; color: #64748b; font-size: 0.95rem;" id="q-part-tag">Part 1: Tap the Best Answer!</span>
+      </div>
+
+      <h2 class="q-title" id="q-question-text">1. Count the shiny stars:</h2>
+      <div class="q-hint" id="q-hint-text"></div>
+
+      <!-- Visual Area with SVG Graphics -->
+      <div class="visual-box" id="q-visual-box">
+        <div class="visual-svg-wrap" id="q-svg-container"></div>
+      </div>
+
+      <!-- Multiple Choice Options (Part 1) -->
+      <div class="options-grid" id="mcq-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Fill in the blanks Area (Part 2) -->
+      <div class="fill-area" id="fill-container" style="display:none;">
+        <div class="slots-container" id="slots-wrapper">
+          <!-- Dynamic slots -->
+        </div>
+
+        <div class="keypad-grid" id="virtual-keypad">
+          <button class="key-btn" onclick="Game.pressKey('1')">1</button>
+          <button class="key-btn" onclick="Game.pressKey('2')">2</button>
+          <button class="key-btn" onclick="Game.pressKey('3')">3</button>
+          <button class="key-btn" onclick="Game.pressKey('4')">4</button>
+          <button class="key-btn" onclick="Game.pressKey('5')">5</button>
+          <button class="key-btn" onclick="Game.pressKey('6')">6</button>
+          <button class="key-btn" onclick="Game.pressKey('7')">7</button>
+          <button class="key-btn" onclick="Game.pressKey('8')">8</button>
+          <button class="key-btn" onclick="Game.pressKey('9')">9</button>
+          <button class="key-btn" onclick="Game.pressKey('0')">0</button>
+          <button class="key-btn key-action" onclick="Game.pressKey('DEL')">⌫ Erase</button>
+          <button class="key-btn key-submit" onclick="Game.submitFillAnswer()">Check Answer ✓</button>
+        </div>
+      </div>
+
+      <!-- Feedback Banner -->
+      <div class="feedback-banner" id="feedback-bar">
+        <div id="feedback-msg">Super Star! 🎉</div>
+        <button class="btn-next" id="btn-next-question">Next ➡️</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: RESULT & CERTIFICATE -->
+    <div class="screen" id="screen-result">
+      <div class="certificate-card">
+        <div class="cert-badge">🏆⭐🎉</div>
+        <div class="cert-title" id="cert-title">MATH SUPERSTAR CERTIFICATE</div>
+        <div class="cert-sub" id="cert-sub">Awarded to Grade 1 Champion:</div>
+        <div class="cert-name" id="cert-player-name">Math Star</div>
+        <p style="color:#64748b; margin-bottom: 10px; font-size: 1.05rem;" id="cert-desc">For mastering Numbers 11 to 20, Tens and Ones!</p>
+
+        <div class="score-circle">
+          <span class="score-num" id="cert-score-num">15</span>
+          <span class="score-denom" id="cert-score-label">OUT OF 15</span>
+        </div>
+
+        <div id="cert-feedback-praise" style="font-size:1.25rem; font-weight:800; color:#15803d; margin-top:8px;">
+          Awesome! You are a Math Super Star! 🌟
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-secondary" onclick="window.print()">
+          <span>🖨️ Print / Save PDF</span>
+        </button>
+        <button class="btn-main" onclick="Game.restart()">
+          <span>🔄 Play Again</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       AUDIO SYNTHESIZER (Web Audio API - No External Files)
+       ========================================================= */
+    const SoundEngine = {
+      enabled: true,
+      ctx: null,
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      },
+
+      playCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+          gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.35);
+        });
+      },
+
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.25);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+      },
+
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.06);
+      },
+
+      playFanfare() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const chord = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        const now = this.ctx.currentTime;
+        chord.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+
+          gain.gain.setValueAtTime(0.22, now + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.6);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.6);
+        });
+      }
+    };
+
+    /* =========================================================
+       CONFETTI SYSTEM
+       ========================================================= */
+    const Confetti = {
+      canvas: document.getElementById('confetti-canvas'),
+      ctx: null,
+      particles: [],
+      animId: null,
+
+      init() {
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      },
+
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      },
+
+      burst(count = 60) {
+        const colors = ['#f59e0b', '#10b981', '#6366f1', '#ec4899', '#06b6d4', '#f43f5e'];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            vx: (Math.random() - 0.5) * 16,
+            vy: (Math.random() - 0.7) * 18,
+            size: Math.random() * 8 + 6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 10,
+            opacity: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      },
+
+      loop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45; // gravity
+          p.rotation += p.rotSpeed;
+          p.opacity -= 0.015;
+
+          this.ctx.save();
+          this.ctx.globalAlpha = Math.max(0, p.opacity);
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate((p.rotation * Math.PI) / 180);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          this.ctx.restore();
+
+          if (p.opacity <= 0 || p.y > window.innerHeight) {
+            this.particles.splice(i, 1);
+          }
+        }
+
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+        }
+      }
+    };
+    Confetti.init();
+
+    /* =========================================================
+       QUESTION DATA (Grade 1 Kid-Friendly English Sentences)
+       ========================================================= */
+    const QUESTIONS_DATA = [
+      // 1. Shiny Stars
+      {
+        id: 1,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "1. Count all the shiny stars below:",
+          id: "1. Hitunglah semua bintang bersinar di bawah ini:"
+        },
+        hint: {
+          en: "⭐ Group of 10 Stars + 3 Loose Stars",
+          id: "⭐ Kelompok 10 Bintang + 3 Bintang lepas"
+        },
+        options: [
+          { text: "11", isCorrect: false },
+          { text: "13", isCorrect: true },
+          { text: "15", isCorrect: false }
+        ],
+        explanation: {
+          en: "10 stars + 3 loose stars = 13! Super job! ⭐",
+          id: "10 bintang + 3 bintang lepas = 13 ⭐"
+        },
+        svg: `
+          <svg viewBox="0 0 460 140" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="240" height="110" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="6,6"/>
+            <text x="130" y="32" font-size="13" font-weight="bold" fill="#1d4ed8" text-anchor="middle">Group of 10 Stars (10)</text>
+            <g font-size="20">
+              <text x="32" y="65">⭐</text><text x="75" y="65">⭐</text><text x="120" y="65">⭐</text><text x="165" y="65">⭐</text><text x="210" y="65">⭐</text>
+              <text x="32" y="100">⭐</text><text x="75" y="100">⭐</text><text x="120" y="100">⭐</text><text x="165" y="100">⭐</text><text x="210" y="100">⭐</text>
+            </g>
+            <text x="270" y="75" font-size="30" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <rect x="290" y="10" width="155" height="110" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="2.5" stroke-dasharray="6,6"/>
+            <text x="367" y="32" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">3 Loose Stars</text>
+            <g font-size="24">
+              <text x="312" y="80">⭐</text><text x="355" y="80">⭐</text><text x="398" y="80">⭐</text>
+            </g>
+          </svg>
+        `
+      },
+      // 2. Base Ten Blocks
+      {
+        id: 2,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "2. Look at the blocks. What number does this show?",
+          id: "2. Perhatikan balok. Angka berapa yang ditunjukkan?"
+        },
+        hint: {
+          en: "🟦 1 Ten Rod (10) + 4 Ones Cubes (4)",
+          id: "🟦 1 Batang Puluhan (10) + 4 Kubus Satuan (4)"
+        },
+        options: [
+          { text: "14", isCorrect: true },
+          { text: "12", isCorrect: false },
+          { text: "41", isCorrect: false }
+        ],
+        explanation: {
+          en: "1 Ten (10) and 4 Ones (4) make 14! You did it! 🎉",
+          id: "1 Puluhan (10) dan 4 Satuan (4) = 14!"
+        },
+        svg: `
+          <svg viewBox="0 0 420 150" width="100%" height="140" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(60, 10)">
+              <rect x="0" y="0" width="28" height="110" rx="5" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+              <line x1="0" y1="11" x2="28" y2="11" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="22" x2="28" y2="22" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="33" x2="28" y2="33" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="44" x2="28" y2="44" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="55" x2="28" y2="55" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="66" x2="28" y2="66" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="77" x2="28" y2="77" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="88" x2="28" y2="88" stroke="#0284c7" stroke-width="1.5"/>
+              <line x1="0" y1="99" x2="28" y2="99" stroke="#0284c7" stroke-width="1.5"/>
+              <text x="14" y="132" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">1 TEN (10)</text>
+            </g>
+            <text x="160" y="70" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <g transform="translate(200, 45)">
+              <rect x="0" y="0" width="28" height="28" rx="4" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
+              <text x="14" y="19" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+              <rect x="36" y="0" width="28" height="28" rx="4" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
+              <text x="50" y="19" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+              <rect x="72" y="0" width="28" height="28" rx="4" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
+              <text x="86" y="19" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+              <rect x="108" y="0" width="28" height="28" rx="4" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
+              <text x="122" y="19" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+              <text x="68" y="55" font-size="12" font-weight="bold" fill="#be185d" text-anchor="middle">4 ONES (4)</text>
+            </g>
+          </svg>
+        `
+      },
+      // 3. Tens house for 17
+      {
+        id: 3,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "3. In number 17, which digit sits in the TENS house?",
+          id: "3. Pada bilangan 17, angka berapakah yang ada di rumah TENS (Puluhan)?"
+        },
+        hint: {
+          en: "👉 Look at the column on the left!",
+          id: "👉 Lihat kolom di sebelah kiri!"
+        },
+        options: [
+          { text: "7", isCorrect: false },
+          { text: "1", isCorrect: true },
+          { text: "17", isCorrect: false }
+        ],
+        explanation: {
+          en: "Digit 1 sits in the TENS house! Digit 7 is in the Ones house! ⭐",
+          id: "Angka 1 menempati nilai TENS (Puluhan)!"
+        },
+        svg: `
+          <svg viewBox="0 0 380 140" width="100%" height="135" xmlns="http://www.w3.org/2000/svg">
+            <rect x="60" y="15" width="120" height="40" fill="#0284c7" rx="8"/>
+            <text x="120" y="41" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">TENS</text>
+            <rect x="190" y="15" width="120" height="40" fill="#0ea5e9" rx="8"/>
+            <text x="250" y="41" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">ONES</text>
+            <rect x="60" y="60" width="120" height="55" fill="#f0f9ff" stroke="#0284c7" stroke-width="2.5" rx="8"/>
+            <text x="120" y="100" font-size="34" font-weight="900" fill="#0369a1" text-anchor="middle">1</text>
+            <rect x="190" y="60" width="120" height="55" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2.5" rx="8"/>
+            <text x="250" y="100" font-size="34" font-weight="900" fill="#0369a1" text-anchor="middle">7</text>
+          </svg>
+        `
+      },
+      // 4. Number Bond 16
+      {
+        id: 4,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "4. Look at the number bond. What is the missing number?",
+          id: "4. Perhatikan ikatan bilangan. Berapakah angka yang hilang (?)"
+        },
+        hint: {
+          en: "Whole = 16. Part 1 is 10. What is Part 2?",
+          id: "Total = 16. Bagian 1 adalah 10. Bagian 2 = ?"
+        },
+        options: [
+          { text: "6", isCorrect: true },
+          { text: "4", isCorrect: false },
+          { text: "8", isCorrect: false }
+        ],
+        explanation: {
+          en: "10 and 6 make 16! 10 + 6 = 16. Great job! 🌟",
+          id: "10 dan 6 menghasilkan 16! (10 + 6 = 16)"
+        },
+        svg: `
+          <svg viewBox="0 0 360 145" width="100%" height="135" xmlns="http://www.w3.org/2000/svg">
+            <line x1="100" y1="72" x2="220" y2="40" stroke="#94a3b8" stroke-width="4"/>
+            <line x1="100" y1="72" x2="220" y2="105" stroke="#94a3b8" stroke-width="4"/>
+            <circle cx="95" cy="72" r="42" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+            <text x="95" y="62" font-size="11" font-weight="bold" fill="#0369a1" text-anchor="middle">WHOLE</text>
+            <text x="95" y="88" font-size="26" font-weight="900" fill="#0c4a6e" text-anchor="middle">16</text>
+            <circle cx="230" cy="40" r="28" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+            <text x="230" y="48" font-size="18" font-weight="900" fill="#92400e" text-anchor="middle">10</text>
+            <text x="270" y="44" font-size="12" font-weight="bold" fill="#78350f">Part 1 (Ten)</text>
+            <circle cx="230" cy="105" r="28" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="230" y="113" font-size="22" font-weight="900" fill="#b91c1c" text-anchor="middle">?</text>
+            <text x="270" y="110" font-size="12" font-weight="bold" fill="#991b1b">Part 2 (Ones = ?)</text>
+          </svg>
+        `
+      },
+      // 5. Pack of crayons
+      {
+        id: 5,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "5. 1 pack of 10 crayons, plus 2 loose crayons. How many in total?",
+          id: "5. 1 kotak isi 10 krayon, ditambah 2 krayon lepas. Berapa totalnya?"
+        },
+        hint: {
+          en: "🖍️ Choose the tens and ones:",
+          id: "🖍️ Pilih puluhan dan satuan yang benar:"
+        },
+        options: [
+          { text: "1 ten 5 ones", isCorrect: false },
+          { text: "1 ten 2 ones", isCorrect: true },
+          { text: "2 tens 1 one", isCorrect: false }
+        ],
+        explanation: {
+          en: "1 pack is 1 ten, plus 2 loose is 2 ones! Total = 12 crayons! 🖍️",
+          id: "1 kotak (1 ten) + 2 lepas (2 ones) = 1 ten 2 ones (= 12)!"
+        },
+        svg: `
+          <svg viewBox="0 0 400 130" width="100%" height="120" xmlns="http://www.w3.org/2000/svg">
+            <rect x="25" y="25" width="180" height="75" rx="10" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+            <text x="115" y="48" font-size="12" font-weight="900" fill="#854d0e" text-anchor="middle">PACK OF 10 CRAYONS</text>
+            <g font-size="18">
+              <text x="45" y="78">🖍️</text><text x="75" y="78">🖍️</text><text x="105" y="78">🖍️</text><text x="135" y="78">🖍️</text><text x="165" y="78">🖍️</text>
+            </g>
+            <text x="235" y="72" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <g transform="translate(265, 35)">
+              <rect x="0" y="8" width="80" height="16" rx="5" fill="#38bdf8"/>
+              <rect x="0" y="32" width="80" height="16" rx="5" fill="#f43f5e"/>
+              <text x="90" y="32" font-size="12" font-weight="bold" fill="#475569">2 Loose</text>
+            </g>
+          </svg>
+        `
+      },
+      // 6. Egg Carton
+      {
+        id: 6,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "6. Count the eggs: 1 full carton of 10 eggs and 5 loose eggs:",
+          id: "6. Hitung telur: 1 karton isi 10 telur dan 5 telur lepas:"
+        },
+        hint: {
+          en: "🥚 10 in the carton + 5 outside = ?",
+          id: "🥚 10 di karton + 5 di luar = ?"
+        },
+        options: [
+          { text: "15 eggs", isCorrect: true },
+          { text: "12 eggs", isCorrect: false },
+          { text: "18 eggs", isCorrect: false }
+        ],
+        explanation: {
+          en: "10 + 5 = 15 yummy eggs! Excellent! 🥚",
+          id: "10 + 5 = 15 butir telur! Hebat!"
+        },
+        svg: `
+          <svg viewBox="0 0 420 135" width="100%" height="125" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="15" width="220" height="95" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2.5"/>
+            <text x="125" y="35" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">1 Carton = 10 Eggs</text>
+            <g font-size="20">
+              <text x="35" y="65">🥚</text><text x="75" y="65">🥚</text><text x="115" y="65">🥚</text><text x="155" y="65">🥚</text><text x="195" y="65">🥚</text>
+              <text x="35" y="98">🥚</text><text x="75" y="98">🥚</text><text x="115" y="98">🥚</text><text x="155" y="98">🥚</text><text x="195" y="98">🥚</text>
+            </g>
+            <text x="260" y="70" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <g transform="translate(290, 30)" font-size="22">
+              <text x="10" y="30">🥚</text><text x="45" y="30">🥚</text><text x="80" y="30">🥚</text>
+              <text x="25" y="65">🥚</text><text x="60" y="65">🥚</text>
+              <text x="115" y="50" font-size="12" font-weight="bold" fill="#64748b">5 Loose</text>
+            </g>
+          </svg>
+        `
+      },
+      // 7. 1 Ten and 9 Ones
+      {
+        id: 7,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "7. What number is made of 1 TEN and 9 ONES?",
+          id: "7. Bilangan berapa yang terbentuk dari 1 TEN dan 9 ONES?"
+        },
+        hint: {
+          en: "1 Ten is 10. 9 Ones is 9. 10 + 9 = ?",
+          id: "1 Ten adalah 10. 9 Ones adalah 9. 10 + 9 = ?"
+        },
+        options: [
+          { text: "19", isCorrect: true },
+          { text: "91", isCorrect: false },
+          { text: "10", isCorrect: false }
+        ],
+        explanation: {
+          en: "1 Ten (10) + 9 Ones (9) = 19 (Nineteen)! 🚀",
+          id: "1 Ten (10) + 9 Ones (9) = 19!"
+        },
+        svg: `
+          <svg viewBox="0 0 380 140" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(60, 10)">
+              <rect x="0" y="0" width="26" height="100" rx="4" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+              <text x="13" y="122" font-size="12" font-weight="bold" fill="#0e7490" text-anchor="middle">1 TEN</text>
+            </g>
+            <text x="145" y="65" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <g transform="translate(190, 15)">
+              <rect x="0" y="0" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="28" y="0" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="56" y="0" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="0" y="28" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="28" y="28" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="56" y="28" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="0" y="56" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="28" y="56" width="22" height="22" rx="3" fill="#ec4899"/>
+              <rect x="56" y="56" width="22" height="22" rx="3" fill="#ec4899"/>
+              <text x="110" y="48" font-size="13" font-weight="bold" fill="#be185d">9 ONES</text>
+            </g>
+          </svg>
+        `
+      },
+      // 8. Ten-Frames
+      {
+        id: 8,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "8. Look at the Ten-Frames. How many dots are there altogether?",
+          id: "8. Perhatikan Ten-Frames. Ada berapa titik seluruhnya?"
+        },
+        hint: {
+          en: "Frame 1 has 10 blue dots. Frame 2 has 4 pink dots.",
+          id: "Frame 1 ada 10 titik biru. Frame 2 ada 4 titik merah muda."
+        },
+        options: [
+          { text: "10", isCorrect: false },
+          { text: "14", isCorrect: true },
+          { text: "16", isCorrect: false }
+        ],
+        explanation: {
+          en: "10 blue dots + 4 pink dots = 14 dots! You are a star! ⭐",
+          id: "10 titik biru + 4 titik merah muda = 14 titik!"
+        },
+        svg: `
+          <svg viewBox="0 0 440 120" width="100%" height="110" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(10, 15)">
+              <rect width="180" height="72" rx="8" fill="#f8fafc" stroke="#0284c7" stroke-width="2"/>
+              <line x1="36" y1="0" x2="36" y2="72" stroke="#0284c7"/>
+              <line x1="72" y1="0" x2="72" y2="72" stroke="#0284c7"/>
+              <line x1="108" y1="0" x2="108" y2="72" stroke="#0284c7"/>
+              <line x1="144" y1="0" x2="144" y2="72" stroke="#0284c7"/>
+              <line x1="0" y1="36" x2="180" y2="36" stroke="#0284c7"/>
+              <circle cx="18" cy="18" r="10" fill="#3b82f6"/><circle cx="54" cy="18" r="10" fill="#3b82f6"/>
+              <circle cx="90" cy="18" r="10" fill="#3b82f6"/><circle cx="126" cy="18" r="10" fill="#3b82f6"/>
+              <circle cx="162" cy="18" r="10" fill="#3b82f6"/>
+              <circle cx="18" cy="54" r="10" fill="#3b82f6"/><circle cx="54" cy="54" r="10" fill="#3b82f6"/>
+              <circle cx="90" cy="54" r="10" fill="#3b82f6"/><circle cx="126" cy="54" r="10" fill="#3b82f6"/>
+              <circle cx="162" cy="54" r="10" fill="#3b82f6"/>
+            </g>
+            <text x="215" y="58" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <g transform="translate(240, 15)">
+              <rect width="180" height="72" rx="8" fill="#f8fafc" stroke="#0284c7" stroke-width="2"/>
+              <line x1="36" y1="0" x2="36" y2="72" stroke="#0284c7"/>
+              <line x1="72" y1="0" x2="72" y2="72" stroke="#0284c7"/>
+              <line x1="108" y1="0" x2="108" y2="72" stroke="#0284c7"/>
+              <line x1="144" y1="0" x2="144" y2="72" stroke="#0284c7"/>
+              <line x1="0" y1="36" x2="180" y2="36" stroke="#0284c7"/>
+              <circle cx="18" cy="18" r="10" fill="#ec4899"/><circle cx="54" cy="18" r="10" fill="#ec4899"/>
+              <circle cx="90" cy="18" r="10" fill="#ec4899"/><circle cx="126" cy="18" r="10" fill="#ec4899"/>
+            </g>
+          </svg>
+        `
+      },
+      // 9. Addition sentence for 18
+      {
+        id: 9,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "9. Which addition sentence makes 18?",
+          id: "9. Kalimat penjumlahan manakah yang menghasilkan 18?"
+        },
+        hint: {
+          en: "⭐ 1 Ten (10) + 8 Ones (8). 10 + ? = 18",
+          id: "⭐ 1 Puluhan (10) + 8 Satuan (8). 10 + ? = 18"
+        },
+        options: [
+          { text: "10 + 8", isCorrect: true },
+          { text: "10 + 2", isCorrect: false },
+          { text: "1 + 8", isCorrect: false }
+        ],
+        explanation: {
+          en: "10 + 8 = 18! 1 Ten plus 8 Ones makes 18! 🎉",
+          id: "10 + 8 = 18! Benar sekali!"
+        },
+        svg: `
+          <svg viewBox="0 0 420 120" width="100%" height="110" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(10, 20)">
+              <text x="0" y="15" font-size="12" font-weight="bold" fill="#0284c7">1 Ten (10)</text>
+              <g font-size="16">
+                <text x="0" y="40">🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦</text>
+              </g>
+            </g>
+            <text x="180" y="65" font-size="24" font-weight="900" fill="#64748b">+</text>
+            <g transform="translate(200, 20)">
+              <text x="0" y="15" font-size="12" font-weight="bold" fill="#db2777">8 Ones (8)</text>
+              <g font-size="16">
+                <text x="0" y="40">🌸🌸🌸🌸🌸</text>
+                <text x="0" y="65">🌸🌸🌸</text>
+              </g>
+            </g>
+            <rect x="310" y="25" width="95" height="60" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+            <text x="357" y="50" font-size="13" font-weight="900" fill="#1e40af" text-anchor="middle">10 + ? =</text>
+            <text x="357" y="72" font-size="18" font-weight="900" fill="#1e40af" text-anchor="middle">18</text>
+          </svg>
+        `
+      },
+      // 10. Bakery boxes (2 Tens = 20)
+      {
+        id: 10,
+        part: 1,
+        type: 'mcq',
+        text: {
+          en: "10. 2 full boxes of 10 donuts make what number?",
+          id: "10. 2 kotak berisi 10 donat menghasilkan bilangan berapa?"
+        },
+        hint: {
+          en: "🍩 1st Box (10) + 2nd Box (10) = ?",
+          id: "🍩 Kotak 1 (10) + Kotak 2 (10) = ?"
+        },
+        options: [
+          { text: "12", isCorrect: false },
+          { text: "18", isCorrect: false },
+          { text: "20 (2 Tens)", isCorrect: true }
+        ],
+        explanation: {
+          en: "10 + 10 = 20 donuts! That is 2 Tens! 🍩🍩",
+          id: "10 + 10 = 20 donat (2 Tens / 2 Puluhan)!"
+        },
+        svg: `
+          <svg viewBox="0 0 400 120" width="100%" height="110" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="15" width="150" height="80" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
+            <text x="95" y="45" font-size="14" font-weight="900" fill="#b45309" text-anchor="middle">🍩 10 DONUTS</text>
+            <text x="95" y="70" font-size="12" font-weight="bold" fill="#78350f" text-anchor="middle">1st Box (1 Ten)</text>
+            <text x="195" y="62" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <rect x="220" y="15" width="150" height="80" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
+            <text x="295" y="45" font-size="14" font-weight="900" fill="#b45309" text-anchor="middle">🍩 10 DONUTS</text>
+            <text x="295" y="70" font-size="12" font-weight="bold" fill="#78350f" text-anchor="middle">2nd Box (1 Ten)</text>
+          </svg>
+        `
+      },
+      // 11. Count Apples (Part 2: Fill in the blank)
+      {
+        id: 11,
+        part: 2,
+        type: 'fill',
+        text: {
+          en: "11. Count and type the total yummy apples:",
+          id: "11. Hitung dan ketikkan jumlah total apel lezat:"
+        },
+        hint: {
+          en: "🧺 1 Basket of 10 Apples + 6 Loose Apples outside",
+          id: "🧺 1 Keranjang berisi 10 Apel + 6 Apel lepas di luar"
+        },
+        slots: [
+          { label: "Total =", suffix: "apples 🍎", expected: "16" }
+        ],
+        explanation: {
+          en: "10 in the basket + 6 loose = 16 apples! 🍎",
+          id: "10 apel di keranjang + 6 lepas = 16 apel!"
+        },
+        svg: `
+          <svg viewBox="0 0 400 120" width="100%" height="110" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="25" width="190" height="70" rx="12" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>
+            <text x="110" y="52" font-size="12" font-weight="900" fill="#78350f" text-anchor="middle">🧺 [ 1 Basket = 10 Apples ]</text>
+            <g font-size="18">
+              <text x="50" y="80">🍎🍎🍎</text>
+            </g>
+            <text x="225" y="65" font-size="28" font-weight="900" fill="#64748b" text-anchor="middle">+</text>
+            <g font-size="22" transform="translate(245, 30)">
+              <text x="5" y="28">🍎🍎🍎</text>
+              <text x="5" y="58">🍎🍎🍎</text>
+            </g>
+          </svg>
+        `
+      },
+      // 12. Break down 13 into Tens and Ones
+      {
+        id: 12,
+        part: 2,
+        type: 'fill',
+        text: {
+          en: "12. Break down the number 13 into Tens and Ones:",
+          id: "12. Uraikan angka 13 menjadi Puluhan dan Satuan:"
+        },
+        hint: {
+          en: "Number 13 has how many Tens and how many Ones?",
+          id: "Angka 13 memiliki berapa Puluhan dan berapa Satuan?"
+        },
+        slots: [
+          { prefix: "Number 13 has:", suffix: "Ten", expected: "1" },
+          { prefix: "and", suffix: "Ones", expected: "3" }
+        ],
+        explanation: {
+          en: "The number 13 has 1 Ten and 3 Ones! You got it! 🌟",
+          id: "Angka 13 memiliki 1 Ten dan 3 Ones!"
+        },
+        svg: `
+          <svg viewBox="0 0 340 100" width="100%" height="95" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="80" cy="50" r="36" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/>
+            <text x="80" y="60" font-size="30" font-weight="900" fill="#312e81" text-anchor="middle">13</text>
+            <text x="140" y="56" font-size="26" font-weight="900" fill="#64748b">→</text>
+            <text x="180" y="42" font-size="14" font-weight="bold" fill="#4f46e5">[ ? ] Ten</text>
+            <text x="180" y="68" font-size="14" font-weight="bold" fill="#ec4899">[ ? ] Ones</text>
+          </svg>
+        `
+      },
+      // 13. Complete 10 + 7
+      {
+        id: 13,
+        part: 2,
+        type: 'fill',
+        text: {
+          en: "13. Finish the addition sentence: 1 Ten + 7 Ones = ?",
+          id: "13. Lengkapi kalimat penjumlahan: 1 Ten + 7 Ones = ?"
+        },
+        hint: {
+          en: "What is 10 + 7?",
+          id: "Berapakah 10 + 7?"
+        },
+        slots: [
+          { prefix: "10 + 7 =", suffix: "", expected: "17" }
+        ],
+        explanation: {
+          en: "10 + 7 = 17! Wonderful job! ⭐",
+          id: "10 + 7 = 17! Hebat sekali!"
+        },
+        svg: `
+          <svg viewBox="0 0 360 100" width="100%" height="90" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="20" width="300" height="60" rx="14" fill="#f0fdf4" stroke="#22c55e" stroke-width="2.5"/>
+            <text x="180" y="58" font-size="26" font-weight="900" fill="#15803d" text-anchor="middle">10 + 7 = ❓</text>
+          </svg>
+        `
+      },
+      // 14. Place Value Chart (1 bundle & 8 sticks)
+      {
+        id: 14,
+        part: 2,
+        type: 'fill',
+        text: {
+          en: "14. Fill in the chart for 1 bundle of 10 sticks and 8 loose sticks:",
+          id: "14. Isilah bagan untuk 1 ikat berisi 10 bambu dan 8 batang lepas:"
+        },
+        hint: {
+          en: "🎋 1 Bundle (10) and 🥢 8 Loose Sticks",
+          id: "🎋 1 Ikat (10) dan 🥢 8 Batang Lepas"
+        },
+        slots: [
+          { label: "TENS:", suffix: "", expected: "1" },
+          { label: "ONES:", suffix: "", expected: "8" }
+        ],
+        explanation: {
+          en: "TENS = 1 and ONES = 8. That makes 18 sticks! 🎋",
+          id: "TENS = 1 dan ONES = 8. Jadi ada 18 batang!"
+        },
+        svg: `
+          <svg viewBox="0 0 380 120" width="100%" height="110" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(20, 20)">
+              <rect x="0" y="0" width="140" height="70" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+              <text x="70" y="30" font-size="12" font-weight="bold" fill="#854d0e" text-anchor="middle">🎋 1 Bundle (10)</text>
+              <text x="70" y="55" font-size="12" font-weight="bold" fill="#854d0e" text-anchor="middle">+ 🥢 8 Sticks</text>
+            </g>
+            <text x="180" y="60" font-size="24" font-weight="900" fill="#64748b">=</text>
+            <g transform="translate(210, 15)">
+              <rect x="0" y="0" width="70" height="30" fill="#0284c7" rx="6"/>
+              <text x="35" y="20" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">TENS</text>
+              <rect x="75" y="0" width="70" height="30" fill="#0ea5e9" rx="6"/>
+              <text x="110" y="20" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">ONES</text>
+              <rect x="0" y="35" width="70" height="40" fill="#eff6ff" stroke="#0284c7" rx="6"/>
+              <text x="35" y="62" font-size="18" font-weight="bold" fill="#0284c7" text-anchor="middle">?</text>
+              <rect x="75" y="35" width="70" height="40" fill="#eff6ff" stroke="#0ea5e9" rx="6"/>
+              <text x="110" y="62" font-size="18" font-weight="bold" fill="#0ea5e9" text-anchor="middle">?</text>
+            </g>
+          </svg>
+        `
+      },
+      // 15. Number Train
+      {
+        id: 15,
+        part: 2,
+        type: 'fill',
+        text: {
+          en: "15. Number Train! Choo-choo! Type the missing number in order:",
+          id: "15. Kereta Angka! Tuut-tuut! Ketikkan angka yang hilang:"
+        },
+        hint: {
+          en: "Count forward: 14 → 15 → 16 → [ ? ] → 18 → 19 → 20",
+          id: "Hitung maju: 14 → 15 → 16 → [ ? ] → 18 → 19 → 20"
+        },
+        slots: [
+          { prefix: "16 →", suffix: "→ 18", expected: "17" }
+        ],
+        explanation: {
+          en: "The missing number is 17! 16, 17, 18! All aboard! 🚂🎉",
+          id: "Angka yang hilang adalah 17! 16, 17, 18!"
+        },
+        svg: `
+          <svg viewBox="0 0 420 110" width="100%" height="100" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(30, 20)">
+              <circle cx="25" cy="25" r="24" fill="#38bdf8" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="25" y="33" font-size="18" font-weight="900" fill="#ffffff" text-anchor="middle">15</text>
+            </g>
+            <text x="95" y="50" font-size="20" font-weight="900" fill="#94a3b8">→</text>
+            <g transform="translate(125, 20)">
+              <circle cx="25" cy="25" r="24" fill="#38bdf8" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="25" y="33" font-size="18" font-weight="900" fill="#ffffff" text-anchor="middle">16</text>
+            </g>
+            <text x="190" y="50" font-size="20" font-weight="900" fill="#94a3b8">→</text>
+            <g transform="translate(220, 20)">
+              <circle cx="25" cy="25" r="25" fill="#fef08a" stroke="#eab308" stroke-width="3" stroke-dasharray="4,4"/>
+              <text x="25" y="33" font-size="20" font-weight="900" fill="#ca8a04" text-anchor="middle">?</text>
+            </g>
+            <text x="285" y="50" font-size="20" font-weight="900" fill="#94a3b8">→</text>
+            <g transform="translate(315, 20)">
+              <circle cx="25" cy="25" r="24" fill="#38bdf8" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="25" y="33" font-size="18" font-weight="900" fill="#ffffff" text-anchor="middle">18</text>
+            </g>
+          </svg>
+        `
+      }
+    ];
+
+    /* =========================================================
+       GAME CONTROLLER (Default: Simple Grade 1 English)
+       ========================================================= */
+    const Game = {
+      lang: 'en', // Default to kid-friendly English!
+      playerName: 'Math Star',
+      currentQIdx: 0,
+      score: 0,
+      activeSlotIdx: 0,
+      slotValues: [],
+      isAnswered: false,
+
+      init() {
+        this.bindEvents();
+        this.updateLangText();
+      },
+
+      bindEvents() {
+        document.getElementById('btn-start').addEventListener('click', () => {
+          SoundEngine.playClick();
+          const nameInput = document.getElementById('input-name').value.trim();
+          if (nameInput) this.playerName = nameInput;
+          document.getElementById('display-name').textContent = this.playerName;
+          this.startGame();
+        });
+
+        document.getElementById('lang-btn').addEventListener('click', () => {
+          SoundEngine.playClick();
+          this.lang = this.lang === 'en' ? 'id' : 'en';
+          document.getElementById('lang-btn').textContent = this.lang === 'en' ? '🇬🇧' : '🇮🇩';
+          this.updateLangText();
+          if (document.getElementById('screen-game').classList.contains('active')) {
+            this.renderQuestion();
+          }
+        });
+
+        document.getElementById('sound-btn').addEventListener('click', () => {
+          SoundEngine.enabled = !SoundEngine.enabled;
+          document.getElementById('sound-btn').textContent = SoundEngine.enabled ? '🔊' : '🔇';
+          if (SoundEngine.enabled) SoundEngine.playClick();
+        });
+
+        document.getElementById('btn-next-question').addEventListener('click', () => {
+          SoundEngine.playClick();
+          this.nextQuestion();
+        });
+      },
+
+      updateLangText() {
+        const isEn = this.lang === 'en';
+        document.getElementById('txt-title').textContent = isEn
+          ? 'Tens & Ones Adventure!'
+          : 'Petualangan Puluhan & Satuan';
+        document.getElementById('txt-subtitle').textContent = isEn
+          ? 'Fun math game to learn Numbers 11 to 20!'
+          : 'Belajar mengenal bilangan 11 sampai 20 dengan seru!';
+        document.getElementById('txt-namelabel').textContent = isEn
+          ? 'Type Your Name:'
+          : 'Masukkan Nama Kamu:';
+        document.getElementById('txt-start-btn').textContent = isEn
+          ? 'Start Game!'
+          : 'Mulai Petualangan!';
+        document.getElementById('score-counter').textContent = isEn
+          ? `Score: ${this.score}`
+          : `Skor: ${this.score}`;
+      },
+
+      startGame() {
+        this.currentQIdx = 0;
+        this.score = 0;
+        this.updateScoreDisplay();
+        document.getElementById('progress-container').style.display = 'block';
+        this.switchScreen('screen-game');
+        this.renderQuestion();
+      },
+
+      switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+      },
+
+      updateScoreDisplay() {
+        const isEn = this.lang === 'en';
+        document.getElementById('score-counter').textContent = isEn
+          ? `Score: ${this.score}`
+          : `Skor: ${this.score}`;
+      },
+
+      renderQuestion() {
+        this.isAnswered = false;
+        const q = QUESTIONS_DATA[this.currentQIdx];
+        const isEn = this.lang === 'en';
+
+        // Update Progress
+        const percent = ((this.currentQIdx + 1) / QUESTIONS_DATA.length) * 100;
+        document.getElementById('progress-bar').style.width = percent + '%';
+
+        // Headers
+        document.getElementById('q-number-tag').textContent = isEn
+          ? `Question ${this.currentQIdx + 1} of ${QUESTIONS_DATA.length}`
+          : `Soal ${this.currentQIdx + 1} dari ${QUESTIONS_DATA.length}`;
+
+        document.getElementById('q-part-tag').textContent = q.part === 1
+          ? (isEn ? 'Part 1: Tap the Best Answer!' : 'Bagian 1: Pilihan Ganda')
+          : (isEn ? 'Part 2: Tap the Number Pad!' : 'Bagian 2: Isian Interaktif');
+
+        document.getElementById('q-question-text').textContent = q.text[this.lang];
+        document.getElementById('q-hint-text').textContent = q.hint ? q.hint[this.lang] : '';
+
+        // Render SVG
+        document.getElementById('q-svg-container').innerHTML = q.svg;
+
+        // Hide feedback bar
+        const fb = document.getElementById('feedback-bar');
+        fb.classList.remove('show', 'success', 'error');
+
+        // Setup Part 1 (MCQ) vs Part 2 (Fill)
+        const mcqBox = document.getElementById('mcq-container');
+        const fillBox = document.getElementById('fill-container');
+
+        if (q.type === 'mcq') {
+          mcqBox.style.display = 'grid';
+          fillBox.style.display = 'none';
+          this.renderMCQ(q);
+        } else {
+          mcqBox.style.display = 'none';
+          fillBox.style.display = 'flex';
+          this.renderFill(q);
+        }
+      },
+
+      renderMCQ(q) {
+        const container = document.getElementById('mcq-container');
+        container.innerHTML = '';
+        const letters = ['A', 'B', 'C'];
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('div');
+          btn.className = 'opt-card';
+          btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span> <span>${opt.text}</span>`;
+          btn.addEventListener('click', () => {
+            if (this.isAnswered) return;
+            this.handleMCQAnswer(btn, opt.isCorrect, q);
+          });
+          container.appendChild(btn);
+        });
+      },
+
+      handleMCQAnswer(btnElem, isCorrect, q) {
+        this.isAnswered = true;
+        const fb = document.getElementById('feedback-bar');
+        const msg = document.getElementById('feedback-msg');
+        const isEn = this.lang === 'en';
+
+        if (isCorrect) {
+          SoundEngine.playCorrect();
+          Confetti.burst(40);
+          btnElem.classList.add('correct');
+          this.score++;
+          this.updateScoreDisplay();
+
+          fb.className = 'feedback-banner show success';
+          msg.innerHTML = `<strong>${isEn ? 'Super Star! 🎉' : 'Benar Sekali! 🎉'}</strong> ${q.explanation[this.lang]}`;
+        } else {
+          SoundEngine.playWrong();
+          btnElem.classList.add('wrong');
+
+          const cards = document.querySelectorAll('.opt-card');
+          q.options.forEach((opt, i) => {
+            if (opt.isCorrect) cards[i].classList.add('correct');
+          });
+
+          fb.className = 'feedback-banner show error';
+          msg.innerHTML = `<strong>${isEn ? 'Nice try! 💡' : 'Hampir Benar! 💡'}</strong> ${q.explanation[this.lang]}`;
+        }
+
+        document.getElementById('btn-next-question').textContent = isEn ? 'Next ➡️' : 'Lanjut ➡️';
+      },
+
+      renderFill(q) {
+        const wrapper = document.getElementById('slots-wrapper');
+        wrapper.innerHTML = '';
+        this.slotValues = new Array(q.slots.length).fill('');
+        this.activeSlotIdx = 0;
+
+        q.slots.forEach((slot, idx) => {
+          const slotItem = document.createElement('div');
+          slotItem.style.display = 'flex';
+          slotItem.style.alignItems = 'center';
+          slotItem.style.gap = '8px';
+
+          if (slot.prefix) {
+            const pre = document.createElement('span');
+            pre.textContent = slot.prefix;
+            slotItem.appendChild(pre);
+          }
+
+          if (slot.label) {
+            const lbl = document.createElement('span');
+            lbl.style.fontSize = '1.1rem';
+            lbl.textContent = slot.label;
+            slotItem.appendChild(lbl);
+          }
+
+          const box = document.createElement('div');
+          box.className = `slot-box ${idx === 0 ? 'active' : ''}`;
+          box.id = `slot-box-${idx}`;
+          box.textContent = '?';
+          box.addEventListener('click', () => {
+            SoundEngine.playClick();
+            this.setActiveSlot(idx);
+          });
+          slotItem.appendChild(box);
+
+          if (slot.suffix) {
+            const suf = document.createElement('span');
+            suf.textContent = slot.suffix;
+            slotItem.appendChild(suf);
+          }
+
+          wrapper.appendChild(slotItem);
+        });
+      },
+
+      setActiveSlot(idx) {
+        this.activeSlotIdx = idx;
+        document.querySelectorAll('.slot-box').forEach((b, i) => {
+          b.classList.toggle('active', i === idx);
+        });
+      },
+
+      pressKey(val) {
+        SoundEngine.playClick();
+        if (this.isAnswered) return;
+
+        if (val === 'DEL') {
+          this.slotValues[this.activeSlotIdx] = '';
+        } else {
+          if (this.slotValues[this.activeSlotIdx].length < 2) {
+            this.slotValues[this.activeSlotIdx] += val;
+          }
+        }
+
+        const box = document.getElementById(`slot-box-${this.activeSlotIdx}`);
+        if (box) {
+          box.textContent = this.slotValues[this.activeSlotIdx] || '?';
+        }
+      },
+
+      submitFillAnswer() {
+        if (this.isAnswered) return;
+        const q = QUESTIONS_DATA[this.currentQIdx];
+        const isEn = this.lang === 'en';
+
+        const hasEmpty = this.slotValues.some(v => v === '');
+        if (hasEmpty) {
+          SoundEngine.playWrong();
+          alert(isEn ? 'Please type your answer in the box first! 😊' : 'Isi kotak jawaban terlebih dahulu ya! 😊');
+          return;
+        }
+
+        this.isAnswered = true;
+        let allCorrect = true;
+        q.slots.forEach((slot, idx) => {
+          if (this.slotValues[idx].trim() !== slot.expected.trim()) {
+            allCorrect = false;
+          }
+        });
+
+        const fb = document.getElementById('feedback-bar');
+        const msg = document.getElementById('feedback-msg');
+
+        if (allCorrect) {
+          SoundEngine.playCorrect();
+          Confetti.burst(40);
+          this.score++;
+          this.updateScoreDisplay();
+
+          q.slots.forEach((_, idx) => {
+            const b = document.getElementById(`slot-box-${idx}`);
+            b.style.borderColor = '#10b981';
+            b.style.background = '#dcfce7';
+          });
+
+          fb.className = 'feedback-banner show success';
+          msg.innerHTML = `<strong>${isEn ? 'You got it! 🎉' : 'Tepat Sekali! 🎉'}</strong> ${q.explanation[this.lang]}`;
+        } else {
+          SoundEngine.playWrong();
+          q.slots.forEach((slot, idx) => {
+            const b = document.getElementById(`slot-box-${idx}`);
+            b.textContent = slot.expected;
+            b.style.borderColor = '#ef4444';
+            b.style.background = '#fee2e2';
+          });
+
+          fb.className = 'feedback-banner show error';
+          msg.innerHTML = `<strong>${isEn ? 'The answer is: ' : 'Jawaban Benar: '}</strong> ${q.explanation[this.lang]}`;
+        }
+
+        document.getElementById('btn-next-question').textContent = isEn ? 'Next ➡️' : 'Lanjut ➡️';
+      },
+
+      nextQuestion() {
+        this.currentQIdx++;
+        if (this.currentQIdx < QUESTIONS_DATA.length) {
+          this.renderQuestion();
+        } else {
+          this.showResults();
+        }
+      },
+
+      showResults() {
+        SoundEngine.playFanfare();
+        Confetti.burst(90);
+        document.getElementById('progress-container').style.display = 'none';
+        this.switchScreen('screen-result');
+
+        const isEn = this.lang === 'en';
+        document.getElementById('cert-player-name').textContent = this.playerName;
+        document.getElementById('cert-score-num').textContent = this.score;
+
+        const praiseElem = document.getElementById('cert-feedback-praise');
+        if (this.score >= 14) {
+          praiseElem.textContent = isEn
+            ? '⭐⭐⭐ Outstanding! True Grade 1 Math Champion!'
+            : '⭐⭐⭐ Luar Biasa! Kamu Juara Bintang Matematika Sejati!';
+          praiseElem.style.color = '#15803d';
+        } else if (this.score >= 10) {
+          praiseElem.textContent = isEn
+            ? '⭐⭐ Great Job! You did so well, keep it up!'
+            : '⭐⭐ Hebat Sekali! Teruslah berlatih, kamu pintar!';
+          praiseElem.style.color = '#0284c7';
+        } else {
+          praiseElem.textContent = isEn
+            ? '⭐ Good Effort! Keep practicing tens and ones!'
+            : '⭐ Bagus! Tetap semangat belajar puluhan dan satuan ya!';
+          praiseElem.style.color = '#b45309';
+        }
+      },
+
+      restart() {
+        SoundEngine.playClick();
+        this.startGame();
+      }
+    };
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      Game.init();
+    });
+  </script>
+</body>
+</html>
